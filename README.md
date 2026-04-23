@@ -182,8 +182,4 @@ SELECT * FROM PackagingHierarchy;
 * v2 API returns full hierarchical packaging
 * Swagger is enabled for testing endpoints
 
----
 
-## Author
-
-Senior Full Stack .NET Developer (Technical Assessment Submission)
