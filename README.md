@@ -183,6 +183,7 @@ SELECT * FROM PackagingHierarchy;
 * Swagger is enabled for testing endpoints
 
 ## Postman 
+<img width="1524" height="816" alt="image" src="https://github.com/user-attachments/assets/2be6bf0f-c153-45ba-bb48-e391002f3f40" />
 
 <img width="952" height="550" alt="image" src="https://github.com/user-attachments/assets/988ead6b-a6fd-423e-862c-66e24d246585" />
 <img width="941" height="560" alt="image" src="https://github.com/user-attachments/assets/a25037a1-5c93-4d19-aa57-7c4aafd7ad50" />
