@@ -182,4 +182,14 @@ SELECT * FROM PackagingHierarchy;
 * v2 API returns full hierarchical packaging
 * Swagger is enabled for testing endpoints
 
+## Postman 
+
+<img width="952" height="550" alt="image" src="https://github.com/user-attachments/assets/988ead6b-a6fd-423e-862c-66e24d246585" />
+<img width="941" height="560" alt="image" src="https://github.com/user-attachments/assets/a25037a1-5c93-4d19-aa57-7c4aafd7ad50" />
+<img width="945" height="597" alt="image" src="https://github.com/user-attachments/assets/0cfad2cd-4a26-452f-a7f9-f23667d875ac" />
+<img width="951" height="681" alt="image" src="https://github.com/user-attachments/assets/059a68a7-2220-42e4-a68a-be172f0463fd" />
+
+
+
+
 
