@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ProductPackaging.Data;
+using ProductPackaging.Entities;
 using ProductPackaging.Services;
 using Serilog;
 using System.Text;
@@ -15,14 +17,16 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
 
-// DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-// JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -50,9 +54,14 @@ builder.Services.AddApiVersioning(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+});
 
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<PasswordHasher<User>>();
 
 var app = builder.Build();
 

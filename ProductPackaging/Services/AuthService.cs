@@ -1,6 +1,7 @@
-﻿using ProductPackaging.Data;
-using ProductPackaging.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ProductPackaging.Data;
+using ProductPackaging.Entities;
 
 namespace ProductPackaging.Services
 {
@@ -8,70 +9,46 @@ namespace ProductPackaging.Services
     {
         private readonly AppDbContext _db;
         private readonly TokenService _tokenService;
-        private readonly ILogger<AuthService> _logger;
+        private readonly PasswordHasher<User> _hasher;
 
-        public AuthService(
-            AppDbContext db,
-            TokenService tokenService,
-            ILogger<AuthService> logger)
+        public AuthService(AppDbContext db, TokenService tokenService)
         {
             _db = db;
             _tokenService = tokenService;
-            _logger = logger;
+            _hasher = new PasswordHasher<User>();
         }
 
         public async Task<bool> RegisterAsync(string username, string password)
         {
-            _logger.LogInformation("Attempting to register user: {Username}", username);
-
             var exists = await _db.Users.AnyAsync(x => x.Username == username);
-
-            if (exists)
-            {
-                _logger.LogWarning("Registration failed - username already exists: {Username}", username);
-                return false;
-            }
+            if (exists) return false;
 
             var user = new User
             {
-                Username = username,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
+                Username = username
             };
+
+            user.PasswordHash = _hasher.HashPassword(user, password);
 
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
-
-            _logger.LogInformation("User registered successfully: {Username}", username);
 
             return true;
         }
 
         public async Task<string?> LoginAsync(string username, string password)
         {
-            _logger.LogInformation("Login attempt for user: {Username}", username);
-
             var user = await _db.Users
                 .FirstOrDefaultAsync(x => x.Username == username);
 
-            if (user == null)
-            {
-                _logger.LogWarning("Login failed - user not found: {Username}", username);
+            if (user == null) return null;
+
+            var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, password);
+
+            if (result == PasswordVerificationResult.Failed)
                 return null;
-            }
 
-            var valid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
-
-            if (!valid)
-            {
-                _logger.LogWarning("Login failed - invalid password: {Username}", username);
-                return null;
-            }
-
-            var token = _tokenService.CreateToken(user);
-
-            _logger.LogInformation("Login successful: {Username}", username);
-
-            return token;
+            return _tokenService.CreateToken(user);
         }
     }
 }

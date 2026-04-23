@@ -25,8 +25,6 @@ namespace ProductPackaging.Controllers
         {
             var products = await _db.Products
                 .Include(p => p.Packages)
-                    .ThenInclude(p => p.Children)
-                .Include(p => p.Packages)
                     .ThenInclude(p => p.PackageType)
                 .Include(p => p.Packages)
                     .ThenInclude(p => p.PackagingItems)
@@ -37,29 +35,31 @@ namespace ProductPackaging.Controllers
             {
                 ProductID = p.ProductId,
                 ProductName = p.ProductName,
-                Packages = BuildTree(p.Packages.Where(x => x.ParentPackageId == null).ToList())
+                Packages = BuildPackages(p.Packages.ToList(), null)
             }).ToList();
-
             return Ok(result);
         }
 
-        private List<PackageDto> BuildTree(List<Packaging> packages)
+        private List<PackageDto> BuildPackages(List<Packaging> allPackages, int? parentId)
         {
-            return packages.Select(p => new PackageDto
-            {
-                PackageID = p.PackageId,
-                PackageTypeID = p.PackageTypeId,
-                PackageTypeName = p.PackageType.PackageTypeName,
-                ParentID = p.ParentPackageId,
-
-                Items = p.PackagingItems.Select(i => new ItemDto
+            return allPackages
+                .Where(p => p.ParentPackageId == parentId)
+                .Select(p => new PackageDto
                 {
-                    ItemID = i.Item.ItemId,
-                    ItemName = i.Item.ItemName
-                }).ToList(),
+                    PackageID = p.PackageId,
+                    PackageTypeID = p.PackageTypeId,
+                    PackageTypeName = p.PackageType.PackageTypeName,
+                    ParentID = p.ParentPackageId,
 
-                Packages = BuildTree(p.Children)
-            }).ToList();
+                    Items = p.PackagingItems.Select(i => new ItemDto
+                    {
+                        ItemID = i.Item.ItemId,
+                        ItemName = i.Item.ItemName
+                    }).ToList(),
+
+                    Packages = BuildPackages(allPackages, p.PackageId)
+                })
+                .ToList();
         }
     }
 }
