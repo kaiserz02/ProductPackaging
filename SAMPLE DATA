@@ -1,0 +1,31 @@
+INSERT INTO Products (ProductName)
+VALUES ('Self Adjusting Table');
+
+INSERT INTO PackagingTypes (PackageTypeName)
+VALUES ('Box'), ('Packet');
+
+INSERT INTO Packaging (ProductId, PackageTypeId, ParentPackageId)
+VALUES (1, 1, NULL); -- Root
+
+INSERT INTO Packaging (ProductId, PackageTypeId, ParentPackageId)
+VALUES 
+(1, 1, 1),
+(1, 1, 1),
+(1, 2, 1);
+
+INSERT INTO Packaging (ProductId, PackageTypeId, ParentPackageId)
+VALUES (1, 2, 4);
+
+INSERT INTO Items (ItemName)
+VALUES 
+('Table Top'),
+('Table Legs'),
+('Screwdriver'),
+('Screws');
+
+INSERT INTO PackagingItems (PackageId, ItemId)
+VALUES 
+(2, 1),
+(3, 2),
+(4, 3),
+(5, 4);
