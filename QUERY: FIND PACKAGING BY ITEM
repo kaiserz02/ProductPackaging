@@ -1,0 +1,9 @@
+SELECT 
+    p.PackageId,
+    pt.PackageTypeName,
+    i.ItemName
+FROM Packaging p
+JOIN PackagingItems pi ON p.PackageId = pi.PackageId
+JOIN Items i ON pi.ItemId = i.ItemId
+JOIN PackagingTypes pt ON p.PackageTypeId = pt.PackageTypeId
+WHERE i.ItemName = 'Screws';
