@@ -16,7 +16,5 @@
         public List<Packaging> Children { get; set; } = new();
 
         public List<PackagingItem> PackagingItems { get; set; } = new();
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
