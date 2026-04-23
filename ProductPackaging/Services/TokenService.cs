@@ -9,14 +9,18 @@ namespace ProductPackaging.Services
     public class TokenService
     {
         private readonly IConfiguration _config;
+        private readonly ILogger<TokenService> _logger;
 
-        public TokenService(IConfiguration config)
+        public TokenService(IConfiguration config, ILogger<TokenService> logger)
         {
             _config = config;
+            _logger = logger;
         }
 
         public string CreateToken(User user)
         {
+            _logger.LogInformation("Generating JWT token for user: {Username}", user.Username);
+
             var claims = new[]
             {
             new Claim(ClaimTypes.Name, user.Username)
